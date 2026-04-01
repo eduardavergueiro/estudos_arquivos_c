@@ -1,0 +1,33 @@
+#include <stdio.h>
+
+typedef struct _Covid Covid;
+
+struct _Covid
+{
+	int dia;
+    int novos_casos;
+    int obitos;
+};
+
+
+int main(){
+
+    FILE *f;
+    Covid *c;
+    int qtd, pos, totbytes;
+
+    f = fopen("arq", "rb");
+    fseek(f, 0, SEEK_END);
+    pos = ftell(f);
+    qtd = pos/sizeof(Covid);
+    printf("Total: %d\n", qtd);
+
+    totbytes = qtd * sizeof(Covid);
+    printf("Tamanho em bytes: %d", totbytes); ///aparentemente a variável pos já servivria 
+
+    fclose(f);
+
+
+    //tem q colocar o if pra se o arquivo for NULL?
+    return 0;
+}
