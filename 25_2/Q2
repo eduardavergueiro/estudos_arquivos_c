@@ -1,0 +1,37 @@
+#include <stdio.h>
+
+typedef struct _Covid Covid;
+
+struct _Covid
+{
+	int dia;
+    int novos_casos;
+    int obitos;
+};
+
+
+//tuuuuudo errado!!!
+int main(){
+
+    FILE *f;
+    Covid c; //precisa do *?
+    int dia_anterior;
+
+    f = fopen("arq", "rb");
+
+    if(fread(&c, sizeof(Covid), 1, f) == 1){
+        dia_anterior = c.dia;
+    }
+
+    while(fread(&c, sizeof(Covid), 1, f) == 1){ //o while anda pq quando chegar no fim o fread vai retornar 0 (pq n tem mais oq ler)
+        if(c.dia != dia_anterior + 1){
+            printf("Lacuna! Dia %d e dia %d", dia_anterior, c.dia);
+        }
+
+        dia_anterior = c.dia;
+    }
+
+    fclose(f);
+
+    return 0;
+}

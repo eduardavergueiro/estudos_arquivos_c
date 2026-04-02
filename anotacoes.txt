@@ -2,6 +2,14 @@ fopen("arquivo", "modo: rb -> leitura binária wb -> escrita binaria")
 fseek("arquivo", offset em bytes, SEEK_:SET(inciio), END, CUR(current)) [vai ate o final do arquivo]
 ftell("arquivo") [retorna posicao atual em bytes]
 rewind("arquivo") [volta pro inicio do arquivo]
-fread(destino, tamanho, quantidade, arquivo) [le os dados do arquivo para a memoria]
-fwrite(origem, tamanho, quantidade, arquivo) [escreve dados da memoria pro arquivo novo]
+fread(destino, tamanho, quantidade de elementos, arquivo) [le os dados do arquivo para a memoria] -> retorna 1 quando lê com sucesso (importante pros ifs)
+fwrite(origem, tamanho, quantidade de elementos, arquivo) [escreve dados da memoria pro arquivo novo]
 fclose("arquivo")
+
+
+
+Use * quando:
+vai usar malloc
+quer array dinâmico
+quer passar/modificar via função
+estrutura muito grande (evitar cópia)

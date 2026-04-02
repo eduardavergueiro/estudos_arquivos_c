@@ -13,9 +13,10 @@ struct _Covid
 int main(){
 
     FILE *f;
-    Covid *c;
+    Covid *c; //n usei, pode tirar
     int qtd, pos, totbytes;
 
+    //QUESTAO 1
     f = fopen("arq", "rb");
     fseek(f, 0, SEEK_END);
     pos = ftell(f);
@@ -26,7 +27,7 @@ int main(){
     printf("Tamanho em bytes: %d", totbytes); ///aparentemente a variável pos já servivria 
 
     fclose(f);
-
+    
 
     //tem q colocar o if pra se o arquivo for NULL?
     return 0;

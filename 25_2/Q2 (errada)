@@ -1,0 +1,34 @@
+#include <stdio.h>
+
+typedef struct _Covid Covid;
+
+struct _Covid
+{
+	int dia;
+    int novos_casos;
+    int obitos;
+};
+
+
+//tuuuuudo errado!!!
+int main(){
+
+    FILE *f;
+    Covid *c; //precisa do *?
+    int pos, qtd, i = 0;
+
+    //parte igual a questao 1
+    f = fopen("arq", "rb");
+    fseek(f, 0, SEEK_END);
+    pos = ftell(f);
+    qtd = pos/sizeof(Covid);
+    //fim da parte igual
+
+    while(i < qtd){
+        if(c[i].dia <= c[i-1].dia){
+            printf("Dia com lacuna: %d", i);
+        }
+    }
+
+    return 0;
+}
