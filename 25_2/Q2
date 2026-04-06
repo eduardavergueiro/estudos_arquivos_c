@@ -10,7 +10,6 @@ struct _Covid
 };
 
 
-//tuuuuudo errado!!!
 int main(){
 
     FILE *f;

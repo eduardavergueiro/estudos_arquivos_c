@@ -1,0 +1,24 @@
+#include <stdio.h>
+
+typedef struct _Covid Covid;
+
+struct _Covid{
+    int dia;
+    int novos_casos;
+    int obitos;
+};
+
+int main(){
+
+    FILE *f;
+    int k = 7;
+    Covid c;
+
+    f = fopen("arq", "rb");
+
+    while(fread(&c, sizeof(Covid), k, f) == 1){
+
+    }
+
+    return 0;
+}

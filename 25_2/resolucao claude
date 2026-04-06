@@ -1,0 +1,168 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int dia;
+    int novos_casos;
+    int obitos;
+} Covid;
+
+
+/* ============================================================
+   I) Total de registros e tamanho do arquivo
+   ============================================================ */
+void questao_I() {
+    FILE *f;
+    Covid c;
+    int total = 0;
+
+    f = fopen("covid.bin", "rb");
+
+    while (fread(&c, sizeof(Covid), 1, f) == 1) {
+        total++;
+    }
+
+    fseek(f, 0, SEEK_END);
+    long tamanho = ftell(f);
+
+    printf("Total de registros: %d\n", total);
+    printf("Tamanho do arquivo: %ld bytes\n", tamanho);
+
+    fclose(f);
+}
+
+
+/* ============================================================
+   II) Detecção de lacunas
+   ============================================================ */
+void questao_II() {
+    FILE *f;
+    Covid c;
+    int dia_anterior;
+
+    f = fopen("covid.bin", "rb");
+
+    if (fread(&c, sizeof(Covid), 1, f) == 1) {
+        dia_anterior = c.dia;
+    }
+
+    while (fread(&c, sizeof(Covid), 1, f) == 1) {
+        if (c.dia != dia_anterior + 1) {
+            printf("Lacuna! Dia %d seguido do dia %d\n", dia_anterior, c.dia);
+        }
+        dia_anterior = c.dia;
+    }
+
+    fclose(f);
+}
+
+
+/* ============================================================
+   III) Medias moveis com janela k
+   ============================================================ */
+void questao_III(int k) {
+    FILE *fin, *fout;
+    Covid c;
+    Covid *janela = malloc(k * sizeof(Covid));
+    int preenchidos = 0;
+
+    fin  = fopen("covid.bin",       "rb");
+    fout = fopen("media_movel.bin", "wb");
+
+    /* Preenche a janela inicial */
+    while (preenchidos < k && fread(&c, sizeof(Covid), 1, fin) == 1) {
+        janela[preenchidos] = c;
+        preenchidos++;
+    }
+
+    while (preenchidos == k) {
+        int soma_casos = 0, soma_obitos = 0;
+        for (int i = 0; i < k; i++) {
+            soma_casos  += janela[i].novos_casos;
+            soma_obitos += janela[i].obitos;
+        }
+
+        Covid media;
+        media.dia         = janela[k - 1].dia;
+        media.novos_casos = soma_casos  / k;
+        media.obitos      = soma_obitos / k;
+
+        fwrite(&media, sizeof(Covid), 1, fout);
+
+        /* Desloca janela */
+        for (int i = 0; i < k - 1; i++)
+            janela[i] = janela[i + 1];
+
+        /* Le proximo */
+        if (fread(&janela[k - 1], sizeof(Covid), 1, fin) != 1)
+            preenchidos--;
+    }
+
+    free(janela);
+    fclose(fin);
+    fclose(fout);
+}
+
+
+/* ============================================================
+   IV) Combinacao de dois arquivos ordenados
+   ============================================================ */
+void questao_IV() {
+    FILE *f1, *f2, *fout;
+    Covid r1, r2, out;
+    int tem1, tem2;
+
+    f1   = fopen("covid1.bin",    "rb");
+    f2   = fopen("covid2.bin",    "rb");
+    fout = fopen("combinado.bin", "wb");
+
+    tem1 = fread(&r1, sizeof(Covid), 1, f1) == 1;
+    tem2 = fread(&r2, sizeof(Covid), 1, f2) == 1;
+
+    while (tem1 || tem2) {
+        if (tem1 && tem2) {
+            if (r1.dia < r2.dia) {
+                out  = r1;
+                tem1 = fread(&r1, sizeof(Covid), 1, f1) == 1;
+            } else if (r2.dia < r1.dia) {
+                out  = r2;
+                tem2 = fread(&r2, sizeof(Covid), 1, f2) == 1;
+            } else {
+                out.dia         = r1.dia;
+                out.novos_casos = r1.novos_casos + r2.novos_casos;
+                out.obitos      = r1.obitos      + r2.obitos;
+                tem1 = fread(&r1, sizeof(Covid), 1, f1) == 1;
+                tem2 = fread(&r2, sizeof(Covid), 1, f2) == 1;
+            }
+        } else if (tem1) {
+            out  = r1;
+            tem1 = fread(&r1, sizeof(Covid), 1, f1) == 1;
+        } else {
+            out  = r2;
+            tem2 = fread(&r2, sizeof(Covid), 1, f2) == 1;
+        }
+
+        fwrite(&out, sizeof(Covid), 1, fout);
+    }
+
+    fclose(f1);
+    fclose(f2);
+    fclose(fout);
+}
+
+
+int main() {
+    printf("=== I ===\n");
+    questao_I();
+
+    printf("\n=== II ===\n");
+    questao_II();
+
+    printf("\n=== III ===\n");
+    questao_III(7);
+
+    printf("\n=== IV ===\n");
+    questao_IV();
+
+    return 0;
+}
