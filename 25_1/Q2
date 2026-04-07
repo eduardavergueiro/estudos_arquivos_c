@@ -1,0 +1,42 @@
+#include <stdio.h>
+
+typedef struct {
+    char cpf[12];
+    char nome[80];
+    int mes;
+    int ano;
+    float valor;
+} Pagamento;
+
+int main(){
+
+    FILE *bPtr;
+    Pagamento p;
+
+    fopen(bPtr);
+
+    //A - é 4 ou 5?
+    fseek(bPtr, 4*sizeof(Pagamento), SEEK_SET);
+    fread(&p, sizeof(Pagamento), 1, bPtr);
+
+    //B
+    fseek(bPtr, 7 * sizeof(Pagamento), SEEK_SET);
+    fread(&p, sizeof(Pagamento), 1, bPtr); //o fread também move o cursor (+)
+    printf("%s, %f\n", p.cpf, p.valor);
+
+    //C
+    fseek(bPtr, -3*sizeof(Pagamento), SEEK_CUR); //(+) então aqui precisa ser -3, pq dps de ler o 8° o cursor tava no incício do 9°
+    fread(&p, sizeof(Pagamento), 1, bPtr);
+    printf("%s, %f\n", p.nome, p.valor);
+
+    //D - tinha que ler só o cpf e valor? precisa desse -?
+    fseek(bPtr, sizeof(Pagamento), SEEK_END); //aparentemente precisa do - pq o SEEKEND vai pro final, e o -size... volta 1 registro
+    fread(&p, sizeof(Pagamento), 1, bPtr);
+    printf("%s, %f\n", p.cpf, p.valor);
+
+
+    
+
+    //SEEK_CUR para mover o cursor a partir da posição atual em que o cursor se encontra
+    return 0;
+}
