@@ -5,11 +5,13 @@ rewind("arquivo") [volta pro inicio do arquivo]
 fread(destino, tamanho, quantidade de elementos, arquivo) [le os dados do arquivo para a memoria] -> retorna 1 quando lê com sucesso (importante pros ifs)
 fwrite(origem, tamanho, quantidade de elementos, arquivo) [escreve dados da memoria pro arquivo novo]
 fclose("arquivo")
-
-
+fgetc(f) [l~e um caractere por vez, retorna o caractere lido, retorna EOF quando acaba]
+fgets() [...]
 
 Use * quando:
 vai usar malloc
 quer array dinâmico
 quer passar/modificar via função
 estrutura muito grande (evitar cópia)
+
+busca sequencial é quando usa o while(fread(...)), busca direta é com o fseek. quando usa a busca sequencial, é bom usar rewind quando a busca é sequencial e vai ler algo dps de terminar
